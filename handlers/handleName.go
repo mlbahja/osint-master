@@ -240,5 +240,5 @@ func getManualSearchLinks(firstName, lastName string) string {
 	output += "  - Respect privacy laws (GDPR, CCPA)\n"
 	output += "  - Use this tool for educational purposes only\n"
 
-	return output
-}
+	return output   
+	
