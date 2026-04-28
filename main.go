@@ -7,6 +7,8 @@ import (
 	"osint-master/handlers"
 )
 
+
+
 func main() {
 	// Custom help
 	flag.Usage = func() {
@@ -62,7 +64,7 @@ func main() {
 
 	switch {
 	case *name != "":
-		result = handlers.HandleName(*name)
+		result = handlers.HandleNameScraper(*name)
 	case *ip != "":
 		handlers.HandleIP(*ip)
 	case *username != "":
