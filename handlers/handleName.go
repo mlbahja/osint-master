@@ -242,3 +242,4 @@ func getManualSearchLinks(firstName, lastName string) string {
 
 	return output   
 	
+}
