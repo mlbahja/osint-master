@@ -16,7 +16,7 @@ type SubdomainInfo struct {
 	Risk      string // "high", "medium", "low", "none"
 	RiskNote  string
 }
-
+  
 // Common subdomains to check (you can expand this list)
 func getSubdomainList() []string {
 	return []string{
