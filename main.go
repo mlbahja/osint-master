@@ -83,7 +83,7 @@ func main() {
 	case *domain != "":
 		result = handlers.HandleDomain(*domain)
 	}
-
+		
 	// Output
 	fmt.Println(result)
 

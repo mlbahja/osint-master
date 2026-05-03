@@ -6,65 +6,65 @@ Testing 30 most likely username variations on social platforms...
 ------------------------------------------------------------
 
 
-[VALID] mlbahja2024 - Found on: Instagram, Reddit, Pinterest
+[VALID] lbahja.- - Found on: Pinterest
 
-[VALID] mlbahja.. - Found on: Instagram, Reddit, Pinterest
+[VALID] lbahja_ - Found on: Instagram, Reddit, Pinterest
 
-[VALID] lbahja - Found on: GitHub, Instagram, Reddit, Pinterest
+[VALID] lbahja. - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mustapha2024 - Found on: GitHub, Instagram, Reddit, Pinterest
+[VALID] mlbahja.1 - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mustaphalbahja.12 - Found on: Instagram, Reddit, Pinterest
+[VALID] real_mustapha - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mustaphalbahja__ - Found on: Instagram, Reddit, Pinterest
+[VALID] mlbahja - Found on: GitHub, Instagram, Reddit, Pinterest
 
-[VALID] mlbahja. - Found on: Instagram, Reddit, Pinterest
+[VALID] ml1 - Found on: GitHub, Instagram, Reddit, GitLab, Pinterest
 
-[VALID] mustapha.1 - Found on: Instagram, Reddit, Pinterest
+[VALID] mustaphalbahja_1 - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mustapha.. - Found on: Instagram, Reddit, Pinterest
+[VALID] mustaphalbahja_12 - Found on: Instagram, Reddit, Pinterest
 
-[VALID] lbahja123 - Found on: Instagram, Reddit, Medium, Pinterest
-
-[VALID] reallbahja - Found on: Instagram, Reddit, Pinterest
-
-[VALID] immustapha - Found on: Instagram, Reddit, Pinterest
-
-[VALID] imlbahja - Found on: Instagram, Reddit, Pinterest
-
-[VALID] mustaphalbahja_2023 - Found on: Instagram, Reddit, Pinterest
-
-[VALID] mustaphalbahja_2024 - Found on: Instagram, Reddit, Pinterest
-
-[VALID] mustaphalbahja- - Found on: Instagram, Reddit, Pinterest
-
-[VALID] lbahja.1 - Found on: Instagram, Reddit, Pinterest
-
-[VALID] m_lbahja - Found on: Instagram, Reddit, Pinterest
-
-[VALID] lbahja_- - Found on: Instagram, Reddit, Pinterest
-
-[VALID] lbahja.- - Found on: Instagram, Reddit, Pinterest
+[VALID] mustaphalbahja.2024 - Found on: Instagram, Reddit, Pinterest
 
 [VALID] mustaphalbahja_- - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mlbahja_. - Found on: Instagram, Reddit, Pinterest
+[VALID] mlbahja2024 - Found on: Instagram, Reddit, Medium, Pinterest
 
-[VALID] mustapha.2024 - Found on: Instagram, Reddit, Pinterest
+[VALID] itslbahja - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mlbahja12 - Found on: Instagram, Reddit, Pinterest
+[VALID] mustapha - Found on: GitHub, Instagram, Reddit, GitLab, Pinterest
 
-[VALID] mlbahja.12 - Found on: Instagram, Reddit, Pinterest
+[VALID] mustapha_lbahja - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mlbahja.- - Found on: Instagram, Reddit, Pinterest
+[VALID] mustapha__ - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mustaphalbahja1 - Found on: Instagram, Reddit, Pinterest
+[VALID] lbahja_12 - Found on: Instagram, Reddit, Pinterest
 
-[VALID] mustaphalbahja.1 - Found on: Instagram, Reddit, Pinterest
+[VALID] lbahja.123 - Found on: Instagram, Reddit, Medium, Pinterest
 
-[VALID] lbahjamustapha - Found on: Instagram, Reddit, Pinterest
+[VALID] mlbahja__ - Found on: Instagram, Reddit, Medium, Pinterest
 
-[VALID] mustapha.12 - Found on: Instagram, Reddit, Pinterest
+[VALID] mustaphalbahja - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] lbahjamustapha - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] lbahja.1 - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] its.mustapha - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] mustapha.lbahja - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] m-lbahja - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] mustaphalbahja._ - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] im.mustapha - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] its_mustapha - Found on: Instagram, Reddit, Medium, Pinterest
+
+[VALID] mustapha2024 - Found on: GitHub, Instagram, Reddit, Medium, Pinterest
+
+[VALID] lbahja_. - Found on: Instagram, Reddit, Medium, Pinterest
 
 ============================================================
 
@@ -74,16 +74,16 @@ SUMMARY:
   - Valid usernames found: 30
 
 VALID USERNAMES TO INVESTIGATE:
-  1. mlbahja2024
-  2. mlbahja..
-  3. lbahja
-  4. mustapha2024
-  5. mustaphalbahja.12
-  6. mustaphalbahja__
-  7. mlbahja.
-  8. mustapha.1
-  9. mustapha..
-  10. lbahja123
+  1. lbahja.-
+  2. lbahja_
+  3. lbahja.
+  4. mlbahja.1
+  5. real_mustapha
+  6. mlbahja
+  7. ml1
+  8. mustaphalbahja_1
+  9. mustaphalbahja_12
+  10. mustaphalbahja.2024
 
 ============================================================
 OSINT TIPS:
