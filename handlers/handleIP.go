@@ -188,6 +188,8 @@ func isValidIP(ip string) bool {
 	for _, part := range parts {
 		if len(part) == 0 || len(part) > 3 {
 			return false
+
+			
 		}
 		for _, c := range part {
 			if c < '0' || c > '9' {
