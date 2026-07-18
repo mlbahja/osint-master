@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -178,24 +179,27 @@ func HandleIP(ip string) string {
 }
 
 // isValidIP performs basic IP address validation
+// func isValidIP(ip string) bool {
+// 	// Simple validation - checks for IPv4 format
+// 	parts := strings.Split(ip, ".")
+// 	if len(parts) != 4 {
+// 		return false
+// 	}
+
+// 	for _, part := range parts {
+// 		if len(part) == 0 || len(part) > 3 {
+// 			return false
+
+//			}
+//			for _, c := range part {
+//				if c < '0' || c > '9' {
+//					return false
+//				}
+//			}
+//		}
+//		return true
+//	}
 func isValidIP(ip string) bool {
-	// Simple validation - checks for IPv4 format
-	parts := strings.Split(ip, ".")
-	if len(parts) != 4 {
-		return false
-	}
-
-	for _, part := range parts {
-		if len(part) == 0 || len(part) > 3 {
-			return false
-
-			
-		}
-		for _, c := range part {
-			if c < '0' || c > '9' {
-				return false
-			}
-		}
-	}
-	return true
+	// Use net package for robust IP validation
+	return net.ParseIP(ip) != nil
 }

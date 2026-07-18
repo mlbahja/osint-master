@@ -49,7 +49,7 @@ func (ug *UsernameGenerator) GenerateAllUsernames() []string {
 		usernames[firstName+"-"+lastName] = true
 	}
 	
-	// 4. Last + First
+	
 	if lastName != "" {
 		usernames[lastName+firstName] = true
 		usernames[lastName+"."+firstName] = true

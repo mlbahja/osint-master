@@ -4,21 +4,39 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
 	"osint-master/handlers"
 )
 
 func main() {
-	// Custom help
+	
 	flag.Usage = func() {
-		fmt.Println("Welcome to osintmaster multi-function Tool\n")
-		fmt.Println("OPTIONS:")
-		fmt.Println(`  -n  "Full Name"        Search information by full name`)
-		fmt.Println(`  -i  "IP Address"       Search information by IP address`)
-		fmt.Println(`  -u  "Username"         Search information by username`)
-		fmt.Println(`  -g  "Full Name"        Generate and test usernames from full name`)
-		fmt.Println(`  -d  "Domain"           Enumerate subdomains`)
-		fmt.Println(`  -o  "FileName"         File name to save output`)
-	}
+
+	fmt.Println("OSINT MASTER")
+	fmt.Println("============")
+	fmt.Println()
+
+	fmt.Println("USAGE:")
+	fmt.Println("  osintmaster [OPTION]")
+	fmt.Println()
+
+	fmt.Println("OPTIONS:")
+	fmt.Println(`  -n "Full Name"    Search information by full name`)
+	fmt.Println(`  -i "IP Address"   Lookup IP information`)
+	fmt.Println(`  -u "Username"     Search username on platforms`)
+	fmt.Println(`  -g "Full Name"    Generate and test usernames`)
+	fmt.Println(`  -d "Domain"       Enumerate subdomains`)
+	fmt.Println(`  -o "File"         Save output to file`)
+	fmt.Println()
+
+	fmt.Println("EXAMPLES:")
+	fmt.Println(`  osintmaster -i 8.8.8.8`)
+	fmt.Println(`  osintmaster -u torvalds`)
+	fmt.Println(`  osintmaster -g "Linus Torvalds"`)
+	fmt.Println(`  osintmaster -n "John Smith"`)
+	fmt.Println(`  osintmaster -d github.com`)
+	fmt.Println(`  osintmaster -i 8.8.8.8 -o output/ip.txt`)
+}
 
 	name := flag.String("n", "", "")
 	ip := flag.String("i", "", "")
@@ -26,6 +44,13 @@ func main() {
 	generate := flag.String("g", "", "") // This is the flag for generate and test
 	domain := flag.String("d", "", "")
 	output := flag.String("o", "", "")
+
+	if len(os.Args) > 1 {
+		if os.Args[1] == "--help" || os.Args[1] == "-h" {
+			flag.Usage()
+			return
+		}
+	}
 
 	flag.Parse()
 
@@ -83,7 +108,7 @@ func main() {
 	case *domain != "":
 		result = handlers.HandleDomain(*domain)
 	}
-		
+
 	// Output
 	fmt.Println(result)
 
