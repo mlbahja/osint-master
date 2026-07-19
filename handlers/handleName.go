@@ -11,6 +11,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+type ContactInfo struct {
+	Phone   string
+	Address string
+	City    string
+	State   string
+}
+
 func IsAllAlpha(s string) bool {
 	for _, r := range s {
 		if !unicode.IsLetter(r) {
@@ -20,12 +27,6 @@ func IsAllAlpha(s string) bool {
 	return true
 }
 
-type ContactInfo struct {
-	Phone   string
-	Address string
-	City    string
-	State   string
-}
 
 // scrapeUSPhoneBookWithProxy attempts to scrape with an optional proxy
 func scrapeUSPhoneBookWithProxy(firstName, lastName, proxyAddress string) ([]ContactInfo, error) {

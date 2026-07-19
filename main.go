@@ -62,9 +62,18 @@ func main() {
 
 	// Ensure only one main option is used
 	options := 0
-	if *name != "" {
+	list := []string{*name, *ip, *username, *generate,*domain}
+	for _, c := range list {
+		if c != "" {
+			options++
+		}
+	}
+
+/*
+	if *name != "" || *ip != "" || *username != "" || *generate != "" || *domain != ""  {
 		options++
 	}
+
 	if *ip != "" {
 		options++
 	}
@@ -77,11 +86,14 @@ func main() {
 	if *domain != "" {
 		options++
 	}
+*/
+
 
 	if options == 0 {
 		fmt.Println("Error: You must provide one of -n, -i, -u, -g, or -d")
 		return
 	}
+	
 
 	if options > 1 {
 		fmt.Println("Error: Use only ONE of -n, -i, -u, -g, or -d")

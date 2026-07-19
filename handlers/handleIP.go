@@ -37,6 +37,9 @@ type IPInfo struct {
 
 // GetIPInfo fetches geolocation and ISP information for an IP address
 func GetIPInfo(ip string) (*IPInfo, error) {
+	fmt.Println("=============> ",ip)
+
+	
 	url := fmt.Sprintf("http://ip-api.com/json/%s?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,asname,query", ip)
 
 	client := &http.Client{
