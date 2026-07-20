@@ -37,9 +37,6 @@ type IPInfo struct {
 
 // GetIPInfo fetches geolocation and ISP information for an IP address
 func GetIPInfo(ip string) (*IPInfo, error) {
-	fmt.Println("=============> ",ip)
-
-	
 	url := fmt.Sprintf("http://ip-api.com/json/%s?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,asname,query", ip)
 
 	client := &http.Client{
@@ -71,9 +68,7 @@ func GetIPInfo(ip string) (*IPInfo, error) {
 
 // CheckAbuseDB checks if IP has been reported for abuse (using free AbuseIPDB API)
 func CheckAbuseDB(ip string) (string, error) {
-	// Note: AbuseIPDB requires an API key for free tier
-	// This is a placeholder - you can sign up for free key at https://www.abuseipdb.com/
-	apiKey := "" // Add your API key here or read from env
+	apiKey := "716929d0ff8fedcf58069ad53bff5117660d6e50641d6df86751d6eee3936590c63a4bb2f7d3bfe2"
 
 	if apiKey == "" {
 		return "API key required for abuse database (get free key from abuseipdb.com)", nil
@@ -102,17 +97,23 @@ func CheckAbuseDB(ip string) (string, error) {
 	json.Unmarshal(body, &result)
 
 	if data, ok := result["data"].(map[string]interface{}); ok {
-		if confidence, ok := data["abuseConfidenceScore"].(float64); ok && confidence > 0 {
-			return fmt.Sprintf("IP has abuse reports (confidence: %.0f%%)", confidence), nil
+		confidence, _ := data["abuseConfidenceScore"].(float64)
+		totalReports, _ := data["totalReports"].(float64) // json numbers kaydiro float64
+		lastReported, _ := data["lastReportedAt"].(string)
+
+		if confidence > 0 {
+			return fmt.Sprintf(
+				"IP has abuse reports (confidence: %.0f%%, total reports: %.0f, last reported: %s)",
+				confidence, totalReports, lastReported,
+			), nil
 		}
 	}
 
 	return "No reported abuse in last 90 days", nil
 }
 
-// HandleIP is the main function for IP lookup
+
 func HandleIP(ip string) string {
-	// Basic IP validation
 	if !isValidIP(ip) {
 		return fmt.Sprintf("Error: '%s' is not a valid IP address\n", ip)
 	}
@@ -120,7 +121,6 @@ func HandleIP(ip string) string {
 	output := fmt.Sprintf("IP Address: %s\n", ip)
 	output += strings.Repeat("=", 50) + "\n\n"
 
-	// Get IP information
 	output += "[INFO] Fetching geolocation and ISP data...\n\n"
 
 	info, err := GetIPInfo(ip)
@@ -128,7 +128,6 @@ func HandleIP(ip string) string {
 		return fmt.Sprintf("Error: %v\n", err)
 	}
 
-	// Display basic information
 	output += "📍 GEOGRAPHIC INFORMATION:\n"
 	output += fmt.Sprintf("  - Country: %s (%s)\n", info.Country, info.CountryCode)
 	if info.Region != "" {
@@ -161,7 +160,6 @@ func HandleIP(ip string) string {
 	output += fmt.Sprintf("  - IP Info: https://ipinfo.io/%s\n", ip)
 	output += fmt.Sprintf("  - VirusTotal: https://www.virustotal.com/gui/ip-address/%s\n", ip)
 
-	// Check for abuse reports (optional - requires API key)
 	output += "\n⚠️  ABUSE REPORT STATUS:\n"
 	abuseStatus, err := CheckAbuseDB(ip)
 	if err != nil {
@@ -199,7 +197,7 @@ func HandleIP(ip string) string {
 //					return false
 //				}
 //			}
-//		}
+//		}	
 //		return true
 //	}
 func isValidIP(ip string) bool {

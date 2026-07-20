@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"osint-master/help"
@@ -27,55 +28,180 @@ func GetPlatforms() []Platform {
 	}
 }
 
+
+type ProfileInfo struct {
+	Bio          string
+	Followers    int
+	ActivityInfo string 
+	Enriched     bool   
+}
+
 type CheckResult struct {
 	Platform string
 	URL      string
 	Username string
 	Found    bool
 	Category string
+	Profile  ProfileInfo
 }
+
+
 
 func checkUsernameOnPlatform(username string, platform Platform, client *http.Client) CheckResult {
 	url := fmt.Sprintf(platform.URL, username)
 
 	req, err := http.NewRequest("HEAD", url, nil)
 	if err != nil {
-		return CheckResult{
-			Platform: platform.Name,
-			URL:      url,
-			Username: username,
-			Found:    false,
-			Category: platform.Category,
-		}
+		return CheckResult{Platform: platform.Name, URL: url, Username: username, Found: false, Category: platform.Category}
 	}
-
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return CheckResult{
-			Platform: platform.Name,
-			URL:      url,
-			Username: username,
-			Found:    false,
-			Category: platform.Category,
-		}
+		return CheckResult{Platform: platform.Name, URL: url, Username: username, Found: false, Category: platform.Category}
 	}
 	defer resp.Body.Close()
 
-	// Profile exists if status is 200 OK or 302 Found
 	found := resp.StatusCode == 200 || resp.StatusCode == 302
 
-	return CheckResult{
+	result := CheckResult{
 		Platform: platform.Name,
 		URL:      url,
 		Username: username,
 		Found:    found,
 		Category: platform.Category,
 	}
+
+	
+	if found {
+		switch platform.Name {
+		case "GitHub":
+			if profile := enrichGitHub(username, client); profile != nil {
+				result.Profile = *profile
+			}
+		case "Reddit":
+			if profile := enrichReddit(username, client); profile != nil {
+				result.Profile = *profile
+			}
+		}
+	}
+
+	return result
 }
 
-// HandleUsername checks if a username exists on platforms
+
+
+type githubAPIResponse struct {
+	Bio         string `json:"bio"`
+	Followers   int    `json:"followers"`
+	PublicRepos int    `json:"public_repos"`
+	CreatedAt   string `json:"created_at"`
+}
+
+func enrichGitHub(username string, client *http.Client) *ProfileInfo {
+	url := fmt.Sprintf("https://api.github.com/users/%s", username)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil
+	}
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("User-Agent", "osint-master")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil // rate-limited (403) or user not found (404) — fail quietly
+	}
+
+	var data githubAPIResponse
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return nil
+	}
+
+	bio := data.Bio
+	if bio == "" {
+		bio = "N/A"
+	}
+
+	return &ProfileInfo{
+		Bio:          bio,
+		Followers:    data.Followers,
+		ActivityInfo: fmt.Sprintf("%d public repos", data.PublicRepos),
+		Enriched:     true,
+	}
+}
+
+
+type redditAPIResponse struct {
+	Data struct {
+		Subreddit struct {
+			PublicDescription string `json:"public_description"`
+		} `json:"subreddit"`
+		CommentKarma float64 `json:"comment_karma"`
+		LinkKarma    float64 `json:"link_karma"`
+		CreatedUTC   float64 `json:"created_utc"`
+	} `json:"data"`
+}
+
+func enrichReddit(username string, client *http.Client) *ProfileInfo {
+	url := fmt.Sprintf("https://www.reddit.com/user/%s/about.json", username)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil
+	}
+	req.Header.Set("User-Agent", "osint-master/1.0 (educational OSINT tool)")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil
+	}
+
+	var data redditAPIResponse
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return nil
+	}
+
+	bio := data.Data.Subreddit.PublicDescription
+	if bio == "" {
+		bio = "N/A"
+	}
+
+	totalKarma := int(data.Data.CommentKarma + data.Data.LinkKarma)
+
+	return &ProfileInfo{
+		Bio:          bio,
+		Followers:    0, // Reddit doesn't expose follower count publicly
+		ActivityInfo: fmt.Sprintf("%d total karma", totalKarma),
+		Enriched:     true,
+	}
+}
+
+
+func formatResult(result CheckResult) string {
+	line := fmt.Sprintf("[FOUND] %s: %s\n", result.Platform, result.URL)
+
+	if result.Profile.Enriched {
+		line += fmt.Sprintf("    Bio: %s\n", result.Profile.Bio)
+		if result.Profile.Followers > 0 {
+			line += fmt.Sprintf("    Followers: %d\n", result.Profile.Followers)
+		}
+		line += fmt.Sprintf("    Activity: %s\n", result.Profile.ActivityInfo)
+	}
+
+	return line
+}
+
 func HandleUsername(username string) string {
 	username = strings.TrimPrefix(username, "@")
 
@@ -86,9 +212,7 @@ func HandleUsername(username string) string {
 	output := fmt.Sprintf("Checking username: %s\n", username)
 	output += strings.Repeat("=", 50) + "\n\n"
 
-	client := &http.Client{
-		Timeout: 5 * time.Second,
-	}
+	client := &http.Client{Timeout: 8 * time.Second}
 
 	platforms := GetPlatforms()
 	var foundResults []CheckResult
@@ -99,7 +223,7 @@ func HandleUsername(username string) string {
 		result := checkUsernameOnPlatform(username, platform, client)
 		if result.Found {
 			foundResults = append(foundResults, result)
-			output += fmt.Sprintf("[FOUND] %s: %s\n", result.Platform, result.URL)
+			output += formatResult(result)
 		}
 	}
 
@@ -113,9 +237,8 @@ func HandleUsername(username string) string {
 	return output
 }
 
-// HandleUsernameFromName generates usernames from a name and checks them
+// HandleUsernameFromName generates usernames from a name and checks them.
 func HandleUsernameFromName(fullName string) string {
-	// First, generate possible usernames
 	usernames := help.GenerateFromFullName(fullName)
 
 	if len(usernames) == 0 {
@@ -126,14 +249,11 @@ func HandleUsernameFromName(fullName string) string {
 	output += fmt.Sprintf("Generated %d possible username variations\n", len(usernames))
 	output += strings.Repeat("=", 50) + "\n\n"
 
-	client := &http.Client{
-		Timeout: 3 * time.Second,
-	}
+	client := &http.Client{Timeout: 5 * time.Second}
 
 	platforms := GetPlatforms()
-	allResults := make(map[string][]CheckResult) // username -> results
+	allResults := make(map[string][]CheckResult)
 
-	// Check first 20 usernames to avoid rate limiting
 	maxUsernames := 20
 	if len(usernames) < maxUsernames {
 		maxUsernames = len(usernames)
@@ -156,7 +276,7 @@ func HandleUsernameFromName(fullName string) string {
 			allResults[username] = foundForThisUser
 			output += fmt.Sprintf("\n[VALID USERNAME] %s\n", username)
 			for _, result := range foundForThisUser {
-				output += fmt.Sprintf("    - %s: %s\n", result.Platform, result.URL)
+				output += formatResult(result)
 			}
 		}
 	}
@@ -177,12 +297,8 @@ func HandleUsernameFromName(fullName string) string {
 	return output
 }
 
-// Add this function to your existing handlers/handleUsername.go file
-// This function will GENERATE usernames from help package AND TEST them
 
-// HandleGenerateAndTestUsernames generates usernames from a full name and tests them
 func HandleGenerateAndTestUsernames(fullName string) string {
-	// Step 1: Generate usernames using your help package
 	usernames := help.GenerateFromFullName(fullName)
 
 	if len(usernames) == 0 {
@@ -193,7 +309,6 @@ func HandleGenerateAndTestUsernames(fullName string) string {
 	output += fmt.Sprintf("Generated %d username variations\n", len(usernames))
 	output += strings.Repeat("=", 60) + "\n\n"
 
-	// Step 2: Test only the most relevant usernames (limit to 30 to avoid rate limiting)
 	maxToCheck := 30
 	if len(usernames) < maxToCheck {
 		maxToCheck = len(usernames)
@@ -202,36 +317,21 @@ func HandleGenerateAndTestUsernames(fullName string) string {
 	output += fmt.Sprintf("Testing %d most likely username variations on social platforms...\n", maxToCheck)
 	output += strings.Repeat("-", 60) + "\n\n"
 
-	client := &http.Client{
-		Timeout: 3 * time.Second,
-	}
-
+	client := &http.Client{Timeout: 5 * time.Second}
 	platforms := GetPlatforms()
+
 	var validUsernames []string
 	validCount := 0
 
 	for i := 0; i < maxToCheck; i++ {
 		username := usernames[i]
-		foundOn := []string{}
+		var foundOn []string
 
-		// Test this username on all platforms
+		
 		for _, platform := range platforms {
-			url := fmt.Sprintf(platform.URL, username)
-			req, err := http.NewRequest("HEAD", url, nil)
-			if err != nil {
-				continue
-			}
-
-			req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-
-			resp, err := client.Do(req)
-			if err != nil {
-				continue
-			}
-			resp.Body.Close()
-
-			if resp.StatusCode == 200 || resp.StatusCode == 302 {
-				foundOn = append(foundOn, platform.Name)
+			result := checkUsernameOnPlatform(username, platform, client)
+			if result.Found {
+				foundOn = append(foundOn, result.Platform)
 			}
 		}
 
@@ -239,15 +339,11 @@ func HandleGenerateAndTestUsernames(fullName string) string {
 			validCount++
 			validUsernames = append(validUsernames, username)
 			output += fmt.Sprintf("\n[VALID] %s - Found on: %s\n", username, strings.Join(foundOn, ", "))
-		} else {
-			// Optional: show which ones are invalid (comment out to reduce spam)
-			// output += fmt.Sprintf("[NOT FOUND] %s\n", username)
 		}
 	}
 
-	// Summary
 	output += "\n" + strings.Repeat("=", 60) + "\n"
-	output += fmt.Sprintf("\nSUMMARY:\n")
+	output += "\nSUMMARY:\n"
 	output += fmt.Sprintf("  - Total username variations generated: %d\n", len(usernames))
 	output += fmt.Sprintf("  - Usernames tested: %d\n", maxToCheck)
 	output += fmt.Sprintf("  - Valid usernames found: %d\n", validCount)

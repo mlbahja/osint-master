@@ -24,3 +24,10 @@ func SaveToFile(filename, data string) {
 
 	fmt.Println("Data saved in", filename)
 }
+
+
+
+
+func SaveAsPdf(file, content string) {
+	//pdf := fpdf.new("p")
+}

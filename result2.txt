@@ -1,0 +1,12 @@
+Checking username: username
+==================================================
+
+Searching platforms...
+
+[FOUND] Instagram: https://instagram.com/username
+[FOUND] Reddit: https://reddit.com/user/username
+[FOUND] GitLab: https://gitlab.com/username
+[FOUND] Pinterest: https://pinterest.com/username
+
+==================================================
+Total profiles found: 4/8

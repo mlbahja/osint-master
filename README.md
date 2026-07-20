@@ -579,3 +579,7 @@ Possible future enhancements include:
 This project was developed for educational purposes as part of an OSINT learning project.
 
 It demonstrates passive reconnaissance techniques while promoting ethical and responsible cybersecurity practices.
+
+
+add this bonus at the end 
+        ==> PDF Generation: Add a feature to generate your OSINT results as PDF files.

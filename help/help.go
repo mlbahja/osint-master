@@ -91,7 +91,7 @@ func (ug *UsernameGenerator) GenerateAllUsernames() []string {
 		}
 	}
 	
-	// 9. Add common suffixes
+	
 	suffixes := []string{"", "1", "12", "123", "2023", "2024", "_", ".", "-"}
 	baseNames := []string{firstName}
 	if lastName != "" {
@@ -123,10 +123,10 @@ func (ug *UsernameGenerator) GenerateAllUsernames() []string {
 		}
 	}
 	
-	// Convert map to slice
+	
 	result := make([]string, 0, len(usernames))
 	for username := range usernames {
-		if len(username) >= 3 && len(username) <= 30 { // Reasonable username length
+		if len(username) >= 3 && len(username) <= 30 { 
 			result = append(result, username)
 		}
 	}

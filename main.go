@@ -21,11 +21,13 @@ func main() {
 	fmt.Println()
 
 	fmt.Println("OPTIONS:")
-	fmt.Println(`  -n "Full Name"    Search information by full name`)
 	fmt.Println(`  -i "IP Address"   Lookup IP information`)
 	fmt.Println(`  -u "Username"     Search username on platforms`)
-	fmt.Println(`  -g "Full Name"    Generate and test usernames`)
 	fmt.Println(`  -d "Domain"       Enumerate subdomains`)
+	fmt.Println()
+	fmt.Println("============")
+	fmt.Println(`  -n "Full Name"    Search information by full name`)
+	fmt.Println(`  -g "Full Name"    Generate and test usernames`)
 	fmt.Println(`  -o "File"         Save output to file`)
 	fmt.Println()
 
@@ -69,24 +71,7 @@ func main() {
 		}
 	}
 
-/*
-	if *name != "" || *ip != "" || *username != "" || *generate != "" || *domain != ""  {
-		options++
-	}
 
-	if *ip != "" {
-		options++
-	}
-	if *username != "" {
-		options++
-	}
-	if *generate != "" {
-		options++
-	}
-	if *domain != "" {
-		options++
-	}
-*/
 
 
 	if options == 0 {
@@ -104,21 +89,23 @@ func main() {
 	var result string
 
 	switch {
-	case *name != "":
-		result = handlers.HandleNameScraper(*name)
-
+		
+		
 	case *ip != "":
 		result = handlers.HandleIP(*ip)
-
 	case *username != "":
 		result = handlers.HandleUsername(*username)
+	case *domain != "":
+		result = handlers.HandleDomain(*domain)
 
+		
+	//bonuss ========================================	
+	case *name != "":
+		result = handlers.HandleNameScraper(*name)
 	case *generate != "":
 		// This will generate AND test usernames
 		result = handlers.HandleGenerateAndTestUsernames(*generate)
 
-	case *domain != "":
-		result = handlers.HandleDomain(*domain)
 	}
 
 	// Output
